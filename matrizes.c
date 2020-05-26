@@ -28,6 +28,28 @@ Matrix* criar(int lin, int col){
 	return A;
 } 
 
+Matrix* identidade(int tam){
+    double **mat;
+    int i ,j;
+    mat=(double**)malloc(tam*sizeof(double*));
+	for(i=0;i<tam;i++){
+		mat[i]=(double*)malloc(tam*sizeof(double));
+		for(j=0;j<tam;j++){
+			 if(i==j){
+                mat[i][j]=1;
+            }else{
+                mat[i][j]=0;
+            }
+		}
+	}
+	Matrix *b;
+	b = (Matrix*)malloc(sizeof(Matrix));
+	b->matr=mat;
+	b->linha=tam;
+	b->coluna=tam;
+	return b;
+}
+
 void imprimir(Matrix* M){
 	int i,j;
 	for(i=0;i<M->linha;i++){
@@ -108,6 +130,10 @@ int main(){
 	imprimir(R1);
 	printf("\n");
 	imprimir(R2);
+	printf("\n");	
+	Matrix *M3;
+	M3 = identidade(4);
+	imprimir(M3);
 	return 0;
 }
 
