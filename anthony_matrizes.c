@@ -6,7 +6,6 @@ struct MATRIX{
 	int coluna;
 	double **matr;
 };
-
 typedef struct MATRIX Matrix;
 
 Matrix* criar(int lin, int col){
@@ -166,6 +165,67 @@ double determinante(Matrix *M1){
     //printf("%lf",total*p);
     return total*p;
 }
+
+double determina(Matrix *M1){
+	
+	int i,j;
+	printf("\n");
+	int linha = M1->linha;
+	int coluna = M1->coluna;
+	double isa[3][3] = {2,-2,-1,3,-4,1,1,1,5};
+	
+	double diminuidor, fator, termo;
+	
+	for(i=0; i<linha; i++){
+		for(j=0; j<coluna; j++){
+			
+			printf("[%.0lf]", isa[i][j]);
+		}
+		printf("\n");
+	}
+	
+	printf("\n");
+	
+	for(i=0; i<linha; i++){
+		for(j=0; j<coluna; j++){
+			if(i > 0){
+					termo = isa[0][j];
+				
+				if(i != j && i > j) {
+					fator = isa[i][j] * (-1)/termo;
+					printf("Novo fator criado: %lf", fator);
+				}
+				
+					
+				 
+				isa[i][j] = isa[i][j] + termo*fator;
+			
+						
+				
+			}			
+				
+					
+			
+		}
+		printf("\n");
+	}
+	
+	printf("\n");
+	
+	for(i=0; i<linha; i++){
+		for(j=0; j<coluna; j++){
+			
+			printf("[%lf]", isa[i][j]);
+		}
+		printf("\n");
+	}
+	
+	printf("\n");	
+	
+	return 0;
+	
+}
+
 Matrix* multiplicacao(Matrix *M1, Matrix *M2){
     if(M1->coluna == M2->linha){
         Matrix *resultado = (Matrix*)malloc(sizeof(Matrix));
@@ -186,24 +246,96 @@ Matrix* multiplicacao(Matrix *M1, Matrix *M2){
         return NULL;
     }
   }
+  
+Matrix* multiplicar(Matrix *M1, Matrix *M2){
+	if(M1->coluna == M2->linha){
+		int i,j,k;
+		
+		double soma=0;
+	
+		Matrix *resultado = (Matrix*)malloc(sizeof(Matrix));
+	
+		resultado = criar(M1->linha, M2->coluna);
+		resultado->linha=M1->linha;
+		resultado->coluna=M2->coluna;
+		
+		for(i=0;i<M1->linha;i++){
+			for(j=0;j<M2->coluna;j++){
+				soma=0;
+				
+				for(k=0;k<M1->coluna;k++){
+					soma += M1->matr[i][k]*M2->matr[k][j];
+					//printf("\n{%lf} += [%lf] * [%lf]", soma, M1->matr[k][j], M2->matr[i][k]);
+				}
+				resultado->matr[i][j] = soma;
+			}
+		}	 	
+	 	return resultado;
+	}else{
+		printf("Essa multiplicacao nao pode ser realizada");
+		return NULL;
+	}
+}
+
+Matrix* diagonal(Matrix *M1){
+	int linha,coluna;
+    linha = M1->linha;
+    coluna = M1->coluna;
+    int i,j;
+    double a;
+    double Mat[linha][coluna];
+    for(i=0;i<linha;i++){
+        for(j=0;j<coluna;j++){
+            Mat[i][j]=M1->matr[i][j];
+        }
+    }
+    int k, p=1;
+    double aux;
+    for(k=0;k<coluna-1;k++){
+        if(Mat[k][k]==0){
+           for(i= k+1;i<linha;i++){
+                if(Mat[i][k]!= 0){
+                   for(j=k;j<coluna;j++){
+                        aux = Mat[i][j];
+                        Mat[i][j]= Mat[k][j];
+                        Mat[k][j]=aux;
+                   }
+                   p = p *(-1);
+                   break;
+                }
+            }
+        }
+        if(Mat[k][k]==0)return 0;
+        for(i = k + 1;i<linha;i++){
+           a = Mat[i][k]/Mat[k][k];
+           for(j = k;j<coluna;j++){
+                Mat[i][j]=Mat[i][j] - Mat[k][j]*a;
+           }
+        }
+        for(i=0;i<linha;i++){
+            for(j=0;j<coluna;j++){
+                printf("%lf ",Mat[i][j]);
+            }printf("\n");
+        }printf("\n");
+    }
+    double total=1;
+    for(i=0;i<linha;i++){
+        total = total * Mat[i][i];
+
+    }
+    //printf("%lf",total*p);
+    return total*p;
+	
+	return NULL;
+}
 
 int main(){
-	Matrix *M, *M1, *M2, *R1, *R2;
+	Matrix *M1, *M2, *result;
 	M1 = criar(3,3);	
 	M2 = criar(3,3);
-	R1 = criar(3,3);	
-	R2 = criar(3,3);
-	preenche(M1);	
-	preenche(M2);	
-	R1 = soma(M1,M2);			
-	R2 = subtracao(M1,M2);		
-	imprimir(R1);
-	printf("\n");
-	imprimir(R2);
-	printf("\n");	
-	Matrix *M3;
-	M3 = identidade(4);
-	imprimir(M3);
+	preenche(M1);
+	result = diagonal(M1);
+		
 	return 0;
 }
 
