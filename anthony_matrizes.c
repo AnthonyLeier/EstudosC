@@ -226,6 +226,65 @@ double determina(Matrix *M1){
 	
 }
 
+Matrix* zeraTriangulo(Matrix *M1){
+	
+	Matrix *resultado = (Matrix*)malloc(sizeof(Matrix));
+	
+	resultado = criar(M1->linha, M1->coluna);
+	resultado->linha=M1->linha;
+	resultado->coluna=M1->coluna;
+	
+	
+    int linha,coluna;
+    linha = M1->linha;
+    coluna = M1->coluna;
+    int i,j;
+    double a;
+    double Mat[linha][coluna];
+    for(i=0;i<linha;i++){
+        for(j=0;j<coluna;j++){
+            Mat[i][j]=M1->matr[i][j];
+        }
+    }
+    int k, p=1;
+    double aux;
+    for(k=0;k<coluna-1;k++){
+        if(Mat[k][k]==0){
+           for(i= k+1;i<linha;i++){
+                if(Mat[i][k]!= 0){
+                   for(j=k;j<coluna;j++){
+                        aux = Mat[i][j];
+                        Mat[i][j]= Mat[k][j];
+                        Mat[k][j]=aux;
+                   }
+                   p = p *(-1);
+                   break;
+                }
+            }
+        }
+        if(Mat[k][k]==0)return 0;
+        for(i = k + 1;i<linha;i++){
+           a = Mat[i][k]/Mat[k][k];
+           for(j = k;j<coluna;j++){
+                Mat[i][j]=Mat[i][j] - Mat[k][j]*a;
+           }
+        }
+        for(i=0;i<linha;i++){
+            for(j=0;j<coluna;j++){
+                printf("%lf ",Mat[i][j]);
+                resultado->matr[i][j] = Mat[i][j];
+            }printf("\n");
+        }printf("\n");
+    }
+    double total=1;
+    for(i=0;i<linha;i++){
+        total = total * Mat[i][i];
+
+    }
+    //printf("%lf",total*p);
+    return resultado;
+}
+
 Matrix* multiplicacao(Matrix *M1, Matrix *M2){
     if(M1->coluna == M2->linha){
         Matrix *resultado = (Matrix*)malloc(sizeof(Matrix));
@@ -277,64 +336,154 @@ Matrix* multiplicar(Matrix *M1, Matrix *M2){
 	}
 }
 
+
+
+Matrix* transposta(Matrix *M1){
+	
+	int i, j;
+	
+	Matrix *resultado = (Matrix*)malloc(sizeof(Matrix));
+	
+	resultado = criar(M1->linha, M1->coluna);
+	resultado->linha=M1->linha;
+	resultado->coluna=M1->coluna;
+	
+	for (i = 0; i < resultado->linha; i++){
+		for (j = 0; j < resultado->coluna; j++){
+			resultado->matr[j][i] = M1->matr[i][j];			
+		} 		
+	}
+		
+	return resultado;
+	
+}
+
 Matrix* diagonal(Matrix *M1){
-	int linha,coluna;
+	
+	Matrix *resultado;
+		
+	resultado = zeraTriangulo(M1);	
+	resultado = transposta(resultado);
+	resultado = zeraTriangulo(resultado);	
+	
+	return resultado;
+}
+
+Matrix* inversa(Matrix *M1){
+	
+	Matrix *ident = identidade(M1->linha);	
+	
+	Matrix *resultado = (Matrix*)malloc(sizeof(Matrix));
+	
+	
+	resultado = criar(M1->linha, M1->coluna);
+	resultado->linha=M1->linha;
+	resultado->coluna=M1->coluna;
+	
+	
+    int linha,coluna;
     linha = M1->linha;
     coluna = M1->coluna;
     int i,j;
     double a;
-    double Mat[linha][coluna];
+    
+    resultado->matr = (double**)malloc(linha*sizeof(double*));    
+    
     for(i=0;i<linha;i++){
+    	
+    	resultado->matr[i] = (double*)malloc(coluna*sizeof(double));
+    	
         for(j=0;j<coluna;j++){
-            Mat[i][j]=M1->matr[i][j];
+            resultado->matr[i][j]=M1->matr[i][j];
         }
     }
+       
+    
     int k, p=1;
     double aux;
     for(k=0;k<coluna-1;k++){
-        if(Mat[k][k]==0){
+        if(resultado->matr[k][k]==0){
            for(i= k+1;i<linha;i++){
-                if(Mat[i][k]!= 0){
+                if(resultado->matr[i][k]!= 0){
                    for(j=k;j<coluna;j++){
-                        aux = Mat[i][j];
-                        Mat[i][j]= Mat[k][j];
-                        Mat[k][j]=aux;
+                        aux = resultado->matr[i][j];
+                        resultado->matr[i][j]= resultado->matr[k][j];
+                        resultado->matr[k][j]=aux;
                    }
                    p = p *(-1);
                    break;
                 }
             }
         }
-        if(Mat[k][k]==0)return 0;
+        if(resultado->matr[k][k]==0)return 0;
         for(i = k + 1;i<linha;i++){
-           a = Mat[i][k]/Mat[k][k];
+           a = resultado->matr[i][k]/resultado->matr[k][k];
            for(j = k;j<coluna;j++){
-                Mat[i][j]=Mat[i][j] - Mat[k][j]*a;
+                resultado->matr[i][j]=resultado->matr[i][j] - resultado->matr[k][j]*a;
+                ident->matr[i][j] = ident->matr[i][j] - ident->matr[k][j]*a;
            }
         }
-        for(i=0;i<linha;i++){
-            for(j=0;j<coluna;j++){
-                printf("%lf ",Mat[i][j]);
-            }printf("\n");
-        }printf("\n");
+    }    
+    
+    
+    imprimir(ident);
+    imprimir(resultado);
+    
+    ident = transposta(ident);
+    resultado = transposta(resultado);
+    
+    imprimir(ident);
+    imprimir(resultado);
+    
+    for(k=0;k<coluna-1;k++){
+        if(resultado->matr[k][k]==0){
+           for(i= k+1;i<linha;i++){
+                if(resultado->matr[i][k]!= 0){
+                   for(j=k;j<coluna;j++){
+                        aux = resultado->matr[i][j];
+                        resultado->matr[i][j]= resultado->matr[k][j];
+                        resultado->matr[k][j]=aux;
+                   }
+                   p = p *(-1);
+                   break;
+                }
+            }
+        }
+        if(resultado->matr[k][k]==0)return 0;
+        for(i = k + 1;i<linha;i++){
+           a = resultado->matr[i][k]/resultado->matr[k][k];
+           for(j = k;j<coluna;j++){
+                resultado->matr[i][j]=resultado->matr[i][j] - resultado->matr[k][j]*a;
+                ident->matr[i][j] = ident->matr[i][j] - ident->matr[k][j]*a;
+           }
+        }
     }
-    double total=1;
+    
+    ident = transposta(ident);
+    
     for(i=0;i<linha;i++){
-        total = total * Mat[i][i];
-
-    }
-    //printf("%lf",total*p);
-    return total*p;
-	
-	return NULL;
+    	a = resultado->matr[i][i];
+    	
+    	for(j=0;j<coluna;j++){    		
+    		resultado->matr[i][j] = resultado->matr[i][j]/a;
+			ident->matr[i][j] =ident->matr[i][j]/a;	
+		}    	
+	}
+    
+    imprimir(ident);
+    
+    return ident;
 }
 
 int main(){
 	Matrix *M1, *M2, *result;
 	M1 = criar(3,3);	
-	M2 = criar(3,3);
-	preenche(M1);
-	result = diagonal(M1);
+	M2 = criar(3,1);
+	preenche(M1);	
+	preenche(M2);
+	result = inversa(M1);
+	result = multiplicacao(result,M2);
+	imprimir(result);
 		
 	return 0;
 }
