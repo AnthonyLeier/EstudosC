@@ -60,7 +60,7 @@ void imprimir(Matrix* M){
 	return;
 }
 
-Matrix* preenche(Matrix* M){
+void preenche(Matrix* M){
 	int i,j;
 	double valor;
 	
@@ -372,10 +372,7 @@ Matrix* diagonal(Matrix *M1){
 Matrix* inversa(Matrix *M1){
 	
 	Matrix *ident = identidade(M1->linha);	
-	
 	Matrix *resultado = (Matrix*)malloc(sizeof(Matrix));
-	
-	
 	resultado = criar(M1->linha, M1->coluna);
 	resultado->linha=M1->linha;
 	resultado->coluna=M1->coluna;
@@ -388,12 +385,9 @@ Matrix* inversa(Matrix *M1){
     double a;
     
     resultado->matr = (double**)malloc(linha*sizeof(double*));    
-    
-    for(i=0;i<linha;i++){
-    	
+    for(i=0;i<linha;i++){    	
     	resultado->matr[i] = (double*)malloc(coluna*sizeof(double));
-    	
-        for(j=0;j<coluna;j++){
+    	for(j=0;j<coluna;j++){
             resultado->matr[i][j]=M1->matr[i][j];
         }
     }
@@ -405,10 +399,15 @@ Matrix* inversa(Matrix *M1){
         if(resultado->matr[k][k]==0){
            for(i= k+1;i<linha;i++){
                 if(resultado->matr[i][k]!= 0){
-                   for(j=k;j<coluna;j++){
+                   for(j=0;j<coluna;j++){
                         aux = resultado->matr[i][j];
                         resultado->matr[i][j]= resultado->matr[k][j];
                         resultado->matr[k][j]=aux;
+                        
+                        aux = ident->matr[i][j];
+                        ident->matr[i][j]= ident->matr[k][j];
+                        ident->matr[k][j]=aux;
+                        
                    }
                    p = p *(-1);
                    break;
@@ -418,31 +417,27 @@ Matrix* inversa(Matrix *M1){
         if(resultado->matr[k][k]==0)return 0;
         for(i = k + 1;i<linha;i++){
            a = resultado->matr[i][k]/resultado->matr[k][k];
-           for(j = k;j<coluna;j++){
+           for(j = 0;j<coluna;j++){
                 resultado->matr[i][j]=resultado->matr[i][j] - resultado->matr[k][j]*a;
                 ident->matr[i][j] = ident->matr[i][j] - ident->matr[k][j]*a;
            }
         }
     }    
     
-    
-    imprimir(ident);
-    imprimir(resultado);
-    
-    ident = transposta(ident);
-    resultado = transposta(resultado);
-    
-    imprimir(ident);
-    imprimir(resultado);
-    
-    for(k=0;k<coluna-1;k++){
+       
+    for(k=linha-1;k>0;k--){
         if(resultado->matr[k][k]==0){
-           for(i= k+1;i<linha;i++){
+           for(i= k-1;i>=0;i--){
                 if(resultado->matr[i][k]!= 0){
-                   for(j=k;j<coluna;j++){
+                   for(j=coluna-1;j<k;j--){
                         aux = resultado->matr[i][j];
                         resultado->matr[i][j]= resultado->matr[k][j];
                         resultado->matr[k][j]=aux;
+                        
+                        aux = ident->matr[i][j];
+                        ident->matr[i][j]= ident->matr[k][j];
+                        ident->matr[k][j]=aux;
+                        
                    }
                    p = p *(-1);
                    break;
@@ -450,27 +445,24 @@ Matrix* inversa(Matrix *M1){
             }
         }
         if(resultado->matr[k][k]==0)return 0;
-        for(i = k + 1;i<linha;i++){
+        for(i = k - 1;i>=0;i--){
            a = resultado->matr[i][k]/resultado->matr[k][k];
-           for(j = k;j<coluna;j++){
+           for(j = coluna-1;j>=0;j--){
                 resultado->matr[i][j]=resultado->matr[i][j] - resultado->matr[k][j]*a;
                 ident->matr[i][j] = ident->matr[i][j] - ident->matr[k][j]*a;
            }
         }
     }
-    
-    ident = transposta(ident);
+   
     
     for(i=0;i<linha;i++){
     	a = resultado->matr[i][i];
-    	
+    	resultado->matr[i][i] = resultado->matr[i][i]/a;
     	for(j=0;j<coluna;j++){    		
-    		resultado->matr[i][j] = resultado->matr[i][j]/a;
+    		
 			ident->matr[i][j] =ident->matr[i][j]/a;	
 		}    	
-	}
-    
-    imprimir(ident);
+	}    
     
     return ident;
 }
@@ -487,5 +479,3 @@ int main(){
 		
 	return 0;
 }
-
-
