@@ -51,10 +51,14 @@ void InserirFim(LISTA *L, NO *N){
 void InserirOrdenado(LISTA *L, NO *N){
 	NO *aux;
 	if(L->inicio==NULL) L->inicio=N;
+	else if (N->valor < L->inicio->valor){
+		N->prox = L->inicio;
+		L->inicio = N;
+	}
 	else{
-		for(aux=L->inicio;aux->prox!=NULL ;aux=aux->prox);
-		aux->prox=N;
-		
+		for(aux=L->inicio; aux->prox != NULL && aux->valor >= aux->prox->valor;aux=aux->prox);
+			N->prox=aux->prox;
+			aux->prox=N;	
 	}
 	return;	
 }
@@ -77,7 +81,6 @@ void imprimir(LISTA *L){
 		printf("%d ",aux->valor);
 	}
 	return;
-	
 }
 
 
@@ -87,7 +90,7 @@ void main(){
 	LISTA *L;
 	NO *N;
 	L=inicializar();
-
+	/*
 	N=CriarNo(10);
 	InserirInicio(L,N);
 
@@ -99,6 +102,38 @@ void main(){
 	
 	N=CriarNo(6);
 	InserirInicio(L,N);
+	*/
+	/*	
+	N=CriarNo(1);
+	InserirFim(L,N);
+
+	N=CriarNo(3);
+	InserirFim(L,N);
+	
+	N=CriarNo(5);
+	InserirFim(L,N);
+	
+	N=CriarNo(8);
+	InserirFim(L,N);
+	*/		
+		
+	N=CriarNo(4);
+	InserirOrdenado(L,N);
+		
+	N=CriarNo(8);
+	InserirOrdenado(L,N);
+	
+	N=CriarNo(5);
+	InserirOrdenado(L,N);
+	
+	N=CriarNo(3);
+	InserirOrdenado(L,N);
+	
+	N=CriarNo(2);
+	InserirOrdenado(L,N);
+	
+	N=CriarNo(7);
+	InserirOrdenado(L,N);
 	
 	imprimir(L);
 	
