@@ -81,12 +81,18 @@ NO* retirarInicio(LISTA *L){
 }
 
 NO* retirarFim(LISTA *L){
-
+	NO *aux;
+	NO *retirado;
+		
+	for(aux=L->inicio;aux->prox->prox!=NULL;aux=aux->prox);	
+	retirado = aux->prox;
+	aux->prox = NULL;
+	return aux;	
 }
 
 void imprimir(LISTA *L){
 
-	printf("NOSSA LISTA\n");
+	printf("\nNOSSA LISTA\n");
 	NO *aux;
 	for(aux=L->inicio;aux!=NULL;aux=aux->prox){
 		printf("%d ",aux->valor);
@@ -150,11 +156,7 @@ void main(){
 	N=CriarNo(7);
 	InserirOrdenado(L,N);
 	
-	
 	N=CriarNo(3);
-	InserirOrdenado(L,N);
-	
-	N=CriarNo(10);
 	InserirOrdenado(L,N);
 	
 	N=CriarNo(9);
@@ -163,6 +165,8 @@ void main(){
 	
 	imprimir(L);
 	retirarInicio(L);
+	imprimir(L);
+	retirarFim(L);
 	imprimir(L);	
 	
 	return;
