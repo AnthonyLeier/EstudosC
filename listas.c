@@ -42,12 +42,12 @@ void InserirFim(LISTA *L, NO *N){
 	NO *aux;
 	if(L->inicio==NULL) L->inicio=N;
 	else{
-		for(aux=L->inicio;aux->prox!=NULL ;aux=aux->prox);
-		aux->prox=N;
-		
+		for(aux=L->inicio;aux->prox!=NULL;aux=aux->prox);
+		aux->prox=N;		
 	}
 	return;	
 }
+
 void InserirOrdenado(LISTA *L, NO *N){
 	NO *aux;
 	if(L->inicio==NULL) L->inicio=N;
@@ -56,20 +56,31 @@ void InserirOrdenado(LISTA *L, NO *N){
 		L->inicio = N;
 	}
 	else{
-		for(aux=L->inicio; aux->prox != NULL && aux->valor >= aux->prox->valor;aux=aux->prox);
-			N->prox=aux->prox;
-			aux->prox=N;	
+		for(aux=L->inicio; aux->prox != NULL && N->valor >= aux->prox->valor;aux=aux->prox);
+		N->prox=aux->prox;
+		aux->prox=N;	
 	}
 	return;	
 }
-void retirar(int val){
+
+LISTA ordernar(LISTA *L){
+	
+}
+
+NO* retirar(LISTA *L, int val){
 
 }
 
-void RetirarInicio(int val){
-
+NO* retirarInicio(LISTA *L){
+	
+	NO *aux;
+	
+	aux = L->inicio;
+	L->inicio = L->inicio->prox;
+	return aux;
 }
-void RetirarFim(int val){
+
+NO* retirarFim(LISTA *L){
 
 }
 
@@ -126,6 +137,10 @@ void main(){
 	N=CriarNo(5);
 	InserirOrdenado(L,N);
 	
+	
+	N=CriarNo(10);
+	InserirOrdenado(L,N);
+	
 	N=CriarNo(3);
 	InserirOrdenado(L,N);
 	
@@ -135,7 +150,20 @@ void main(){
 	N=CriarNo(7);
 	InserirOrdenado(L,N);
 	
+	
+	N=CriarNo(3);
+	InserirOrdenado(L,N);
+	
+	N=CriarNo(10);
+	InserirOrdenado(L,N);
+	
+	N=CriarNo(9);
+	InserirOrdenado(L,N);
+	
+	
 	imprimir(L);
+	retirarInicio(L);
+	imprimir(L);	
 	
 	return;
 }
