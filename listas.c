@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-
 struct no{
 	int valor;
 	struct no *prox;
@@ -71,8 +70,7 @@ NO* retirar(LISTA *L, int val){
 
 }
 
-NO* retirarInicio(LISTA *L){
-	
+NO* retirarInicio(LISTA *L){	
 	NO *aux;
 	
 	aux = L->inicio;
@@ -134,34 +132,17 @@ void main(){
 	InserirFim(L,N);
 	*/		
 		
-	N=CriarNo(4);
+	N=CriarNo(15);
 	InserirOrdenado(L,N);
 		
-	N=CriarNo(8);
-	InserirOrdenado(L,N);
-	
 	N=CriarNo(5);
 	InserirOrdenado(L,N);
 	
-	
-	N=CriarNo(10);
-	InserirOrdenado(L,N);
-	
 	N=CriarNo(3);
-	InserirOrdenado(L,N);
+	InserirOrdenado(L,N);	
 	
-	N=CriarNo(2);
-	InserirOrdenado(L,N);
-	
-	N=CriarNo(7);
-	InserirOrdenado(L,N);
-	
-	N=CriarNo(3);
-	InserirOrdenado(L,N);
-	
-	N=CriarNo(9);
-	InserirOrdenado(L,N);
-	
+	N=CriarNo(6);
+	InserirOrdenado(L,N);	
 	
 	imprimir(L);
 	retirarInicio(L);
