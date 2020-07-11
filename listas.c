@@ -35,6 +35,7 @@ void InserirInicio(LISTA *L, NO *N)
 {
 	N->prox = L->inicio;
 	L->inicio = N;
+	L->tam++;
 	return;
 }
 void InserirFim(LISTA *L, NO *N)
@@ -44,16 +45,16 @@ void InserirFim(LISTA *L, NO *N)
 		L->inicio = N;
 	else
 	{
-		for (aux = L->inicio; aux->prox != NULL; aux = aux->prox)
-			;
+		for (aux = L->inicio; aux->prox != NULL; aux = aux->prox);
 		aux->prox = N;
 	}
+	L->tam++;
 	return;
 }
-
 void InserirOrdenado(LISTA *L, NO *N)
 {
 	NO *aux;
+	printf("\n --- %p ----%d----\n", L->inicio, N->valor);
 	if (L->inicio == NULL)
 		L->inicio = N;
 	else if (N->valor < L->inicio->valor)
@@ -63,46 +64,92 @@ void InserirOrdenado(LISTA *L, NO *N)
 	}
 	else
 	{
-		for (aux = L->inicio; aux->prox != NULL && N->valor >= aux->prox->valor; aux = aux->prox)
-			;
+		for (aux = L->inicio; aux->prox != NULL && N->valor >= aux->prox->valor; aux = aux->prox);
 		N->prox = aux->prox;
 		aux->prox = N;
 	}
+	L->tam++;
 	return;
 }
-
-LISTA ordernar(LISTA *L)
-{
-}
-
 NO *retirar(LISTA *L, int val)
 {
+	NO *ultimo;
+	NO *antipenultimo;
+	if (val == L->inicio->valor)
+	{
+		ultimo = L->inicio;
+		L->inicio = L->inicio->prox;
+		L->tam--;
+		return ultimo;
+	}
+	else
+	{
+		for (ultimo = L->inicio, antipenultimo = L->inicio; ultimo != NULL && ultimo->valor < val; antipenultimo = ultimo, ultimo = ultimo->prox);
+		if (ultimo != NULL && ultimo->valor == val)
+		{
+			antipenultimo->prox = ultimo->prox;
+			L->tam--;
+			return ultimo;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
 }
-
-NO *retirarInicio(LISTA *L)
+LISTA *copiar(LISTA *L)
+{
+	return 0;
+}
+NO *RetirarInicio(LISTA *L)
 {
 	NO *aux;
-
 	aux = L->inicio;
 	L->inicio = L->inicio->prox;
+	if (L->tam > 0)
+	{
+		L->tam--;
+	}
 	return aux;
 }
-
-NO *retirarFim(LISTA *L)
+LISTA *ordenar(LISTA *L)
 {
 	NO *aux;
-	NO *retirado;
+	LISTA *novo;
+	novo = inicializar();
+	while (L->inicio != NULL)
+	{
+		aux = RetirarInicio(L);
+		printf("\n - %d -\n", aux->valor);
+		InserirOrdenado(novo, aux);
+	}
+	return novo;
+}
 
-	for (aux = L->inicio; aux->prox->prox != NULL; aux = aux->prox)
-		;
-	retirado = aux->prox;
-	aux->prox = NULL;
-	return aux;
+NO *RetirarFim(LISTA *L)
+{
+	NO *ultimo;
+	NO *antipenultimo;
+	/*
+     NO *ultimo = L;
+     NO *antipenultimo= L;
+    while(ultimo->prox != NULL){
+        antipenultimo = ultimo;
+        ultimo = ultimo->prox;
+
+    }*/
+	for (ultimo = L->inicio, antipenultimo = L->inicio; ultimo->prox != NULL; antipenultimo = ultimo, ultimo = ultimo->prox);
+	antipenultimo->prox = NULL;
+	ultimo->prox = antipenultimo;
+	if (L->tam > 0)
+	{
+		L->tam--;
+	}
+	return ultimo;
 }
 
 void imprimir(LISTA *L)
 {
-
 	printf("\nNOSSA LISTA\n");
 	NO *aux;
 	for (aux = L->inicio; aux != NULL; aux = aux->prox)
@@ -118,49 +165,24 @@ void main()
 	LISTA *L;
 	NO *N;
 	L = inicializar();
-	/*
-	N=CriarNo(10);
-	InserirInicio(L,N);
-
-	N=CriarNo(3);
-	InserirInicio(L,N);
-	
-	N=CriarNo(5);
-	InserirInicio(L,N);
-	
-	N=CriarNo(6);
-	InserirInicio(L,N);
-	*/
-	/*	
-	N=CriarNo(1);
-	InserirFim(L,N);
-
-	N=CriarNo(3);
-	InserirFim(L,N);
-	
-	N=CriarNo(5);
-	InserirFim(L,N);
-	
-	N=CriarNo(8);
-	InserirFim(L,N);
-	*/
 
 	N = CriarNo(15);
-	InserirOrdenado(L, N);
-
+	InserirInicio(L, N);
+	//InserirOrdenado(L,N);
 	N = CriarNo(5);
-	InserirOrdenado(L, N);
-
+	InserirInicio(L, N);
+	//InserirOrdenado(L,N);
 	N = CriarNo(3);
-	InserirOrdenado(L, N);
-
+	InserirInicio(L, N);
+	//InserirOrdenado(L,N);
 	N = CriarNo(6);
-	InserirOrdenado(L, N);
+	InserirInicio(L, N);
+	//InserirOrdenado(L,N);
+	//RetirarFim(L);
+	//N = retirar(18,L);
+	imprimir(L);
+	L = ordenar(L);
 
-	imprimir(L);
-	retirarInicio(L);
-	imprimir(L);
-	retirarFim(L);
 	imprimir(L);
 
 	return;
