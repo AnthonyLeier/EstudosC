@@ -95,7 +95,7 @@ void matrix_setelem(Matrix *M, int posicaoi, int posicaoj, float novo_valor) {
 }
 
 // retorna o valor do elemento (x, y) da matriz m.
-double matrix_getelem1(Matrix *M, int x, int y) {
+double matrix_getelem(Matrix *M, int x, int y) {
     Matrix *result;
     Matrix *aux, *aux2;
     int i;
@@ -117,34 +117,6 @@ double matrix_getelem1(Matrix *M, int x, int y) {
     }
 }
 
-// retorna o valor do elemento (x, y) da matriz m.
-double matrix_getelem2(Matrix *M, int x, int y) {
-    Matrix *result;
-    Matrix *passo1, *passo2, *p1, *p2;
-    int i;
-
-    if (x < 1 || y < 1 || x > M->line || y > M->column) {
-        printf("Erro - Posicao invalida da Matriz!\n");
-        return;
-    } else {
-        // Percorrer ate a posicao que eu quero pegar o valor
-        passo1 = M;
-        for (i = 0; i < x; i++) passo1 = passo1->right;
-        for (p1 = passo1, passo1 = passo1->below; passo1->line < y && passo1->line != -1; p1 = passo1, passo1 = passo1->below)
-            ;
-
-        passo2 = M;
-        for (i = 0; i < y; i++) passo2 = passo2->below;
-        for (p2 = passo2, passo2 = passo2->right; passo2->column < x && passo2->column != -1; p2 = passo2, passo2 = passo2->right) {
-            if (passo2 == passo1) result = passo2;
-        };
-
-        printf("[%.1lf]\n", result->info);
-
-        return result->info;
-    }
-}
-
 void imprimir(Matrix *M) {
     int i, j;
     Matrix *aux;
@@ -162,7 +134,7 @@ void imprimirBurra(Matrix *M) {
 
     for (i = 0; i < M->line; i++) {
         for (j = 0; j < M->column; j++) {
-            printf("%.1lf\t", matrix_getelem1(M, i + 1, j + 1));
+            printf("%.1lf\t", matrix_getelem(M, i + 1, j + 1));
         }
         printf("\n");
     }
@@ -188,13 +160,13 @@ void main() {
     imprimir(M);
 
     printf("\nTENTATIVA 1\n");
-    printf("\n%lf", matrix_getelem1(M, 1, 1));
-    printf("\n%lf", matrix_getelem1(M, 1, 2));
-    printf("\n%lf", matrix_getelem1(M, 2, 1));
-    printf("\n%lf", matrix_getelem1(M, 2, 2));
-    printf("\n%lf", matrix_getelem1(M, 3, 1));
-    printf("\n%lf", matrix_getelem1(M, 3, 2));
-    printf("\n%lf", matrix_getelem1(M, 3, 3));
+    printf("\n%lf", matrix_getelem(M, 1, 1));
+    printf("\n%lf", matrix_getelem(M, 1, 2));
+    printf("\n%lf", matrix_getelem(M, 2, 1));
+    printf("\n%lf", matrix_getelem(M, 2, 2));
+    printf("\n%lf", matrix_getelem(M, 3, 1));
+    printf("\n%lf", matrix_getelem(M, 3, 2));
+    printf("\n%lf", matrix_getelem(M, 3, 3));
 
     printf("\nImprimirBurra\n");
 
