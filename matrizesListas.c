@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 struct no {
     int line;
@@ -62,34 +63,87 @@ void matrix_setelem(Matrix *M, int posicaoi, int posicaoj, float novo_valor) {
         // o valor
         // tratamento de erro se a posicao jÃ¡ conter um valor
         aux2 = M;
-        for (i = 0; i < posicaoi; i++) {
+        for (i = 0; i < posicaoj; i++) {
             aux2 = aux2->right;
         }
         for (aux3 = aux2, aux2 = aux2->below;
-             aux2->line < posicaoj && aux2->line != -1;
+             aux2->line < posicaoi && aux2->line != -1;
              aux3 = aux2, aux2 = aux2->below)
             ;
-        aux->below = aux2;
-        aux3->below = aux;
+        if (posicaoi == aux2->line) {
+            aux2->info = aux->info;
+            free(aux);
+        } else {
+            aux->below = aux2;
+            aux3->below = aux;
 
-        aux2 = M;
-        for (i = 0; i < posicaoj; i++) {
-            aux2 = aux2->below;
+            aux2 = M;
+            for (i = 0; i < posicaoi; i++) {
+                aux2 = aux2->below;
+            }
+
+            for (aux3 = aux2, aux2 = aux2->right;
+                 aux2->column < posicaoj && aux2->column != -1;
+                 aux3 = aux2, aux2 = aux2->right)
+                ;
+            aux->right = aux2;
+            aux3->right = aux;
         }
-
-        for (aux3 = aux2, aux2 = aux2->right;
-             aux2->column < posicaoi && aux2->column != -1;
-             aux3 = aux2, aux2 = aux2->right)
-            ;
-        aux->right = aux2;
-        aux3->right = aux;
     }
 
     return;
 }
 
 // retorna o valor do elemento (x, y) da matriz m.
-float matrix_getelem(Matrix *m, int x, int y) {}
+double matrix_getelem1(Matrix *M, int x, int y) {
+    Matrix *result;
+    Matrix *aux, *aux2;
+    int i;
+
+    if (x < 1 || y < 1 || x > M->line || y > M->column) {
+        printf("Erro - Posicao invalida da Matriz!\n");
+        return;
+    } else {
+        // Percorrer ate a posicao que eu quero pegar o valor
+        aux = M;
+        for (i = 0; i < y; i++) aux = aux->right;
+        for (aux2 = aux, aux = aux->below; aux->line < x && aux->line != -1; aux2 = aux, aux = aux->below)
+            ;
+
+        if (aux->line == x)
+            return aux->info;
+        else
+            return 0;
+    }
+}
+
+// retorna o valor do elemento (x, y) da matriz m.
+double matrix_getelem2(Matrix *M, int x, int y) {
+    Matrix *result;
+    Matrix *passo1, *passo2, *p1, *p2;
+    int i;
+
+    if (x < 1 || y < 1 || x > M->line || y > M->column) {
+        printf("Erro - Posicao invalida da Matriz!\n");
+        return;
+    } else {
+        // Percorrer ate a posicao que eu quero pegar o valor
+        passo1 = M;
+        for (i = 0; i < x; i++) passo1 = passo1->right;
+        for (p1 = passo1, passo1 = passo1->below; passo1->line < y && passo1->line != -1; p1 = passo1, passo1 = passo1->below)
+            ;
+
+        passo2 = M;
+        for (i = 0; i < y; i++) passo2 = passo2->below;
+        for (p2 = passo2, passo2 = passo2->right; passo2->column < x && passo2->column != -1; p2 = passo2, passo2 = passo2->right) {
+            if (passo2 == passo1) result = passo2;
+        };
+
+        printf("[%.1lf]\n", result->info);
+
+        return result->info;
+    }
+}
 
 void imprimir(Matrix *M) {
     int i, j;
@@ -103,14 +157,65 @@ void imprimir(Matrix *M) {
     }
 }
 
+void imprimirBurra(Matrix *M) {
+    int i, j;
+
+    for (i = 0; i < M->line; i++) {
+        for (j = 0; j < M->column; j++) {
+            printf("%.1lf\t", matrix_getelem1(M, i + 1, j + 1));
+        }
+        printf("\n");
+    }
+    return;
+}
+
+void preencher(Matrix *M) {
+}
+
 void main() {
     Matrix *M, *aux;
-    M = zeros(3, 4);
+    M = zeros(300, 300);
 
-    matrix_setelem(M, 1, 1, 50.0);
-    matrix_setelem(M, 1, 1, 255.0);
-    matrix_setelem(M, 2, 1, 655.0);
-    matrix_setelem(M, 4, 4, 755.55);
+    matrix_setelem(M, 1, 1, 10.0);
+    matrix_setelem(M, 1, 2, 20.0);
+    matrix_setelem(M, 2, 1, 30.0);
+    matrix_setelem(M, 2, 2, 40.0);
+    matrix_setelem(M, 3, 2, 60.0);
+    matrix_setelem(M, 3, 3, 70.0);
+
+    matrix_setelem(M, 3, 3, 0);
+
+    imprimir(M);
+
+    printf("\nTENTATIVA 1\n");
+    printf("\n%lf", matrix_getelem1(M, 1, 1));
+    printf("\n%lf", matrix_getelem1(M, 1, 2));
+    printf("\n%lf", matrix_getelem1(M, 2, 1));
+    printf("\n%lf", matrix_getelem1(M, 2, 2));
+    printf("\n%lf", matrix_getelem1(M, 3, 1));
+    printf("\n%lf", matrix_getelem1(M, 3, 2));
+    printf("\n%lf", matrix_getelem1(M, 3, 3));
+
+    printf("\nImprimirBurra\n");
+
+    struct timeval start, end;
+    int i;
+
+    gettimeofday(&start, NULL);
+    for (i = 0; i < 1; i++) imprimirBurra(M);
+    gettimeofday(&end, NULL);
+
+    printf("O tempo de execucao da funcao imprimirBurra foi de: %ld microssegundos\n",
+           ((end.tv_sec * 1000000 + end.tv_usec) -
+            (start.tv_sec * 1000000 + start.tv_usec)));
+
+    gettimeofday(&start, NULL);
+    for (i = 0; i < 1; i++) imprimir(M);
+    gettimeofday(&end, NULL);
+
+    printf("O tempo de execucao da funcao imprimir foi de: %ld microssegundos\n",
+           ((end.tv_sec * 1000000 + end.tv_usec) -
+            (start.tv_sec * 1000000 + start.tv_usec)));
 
     /*
     for(aux=M->right;aux!=M;aux=aux->right){
@@ -121,7 +226,9 @@ void main() {
     }
     */
 
-    imprimir(M);
+    //Funções para Semana que Vem
+    //Tirar o Nó
+    //Criar Aleatorio
 
     return;
 }
