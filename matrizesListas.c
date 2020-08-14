@@ -20,7 +20,31 @@ Matrix *CriarN0(int l, int c) {
     N->below = NULL;
     return N;
 }
-
+void tiraNo(Matrix *M, int posicaoi, int posicaoj) {
+    int i, j;
+    Matrix *aux, *aux2;
+    aux = M;
+    for (i = 0; i != posicaoi; i++) {
+        aux = aux->below;
+    }
+    for (; aux->right->column < posicaoj && aux->right->column != -1; aux = aux->right)
+        ;
+    if (aux->right->column == posicaoj) {
+        aux->right = aux->right->right;
+    }
+    aux = M;
+    for (j = 0; j != posicaoj; j++) {
+        aux = aux->right;
+    }
+    for (; aux->below->line < posicaoi && aux->below->line != -1; aux = aux->below)
+        ;
+    if (aux->below->line == posicaoi) {
+        aux2 = aux->below;
+        aux->below = aux->below->below;
+        free(aux2);
+    }
+    return;
+}
 Matrix *zeros(int n, int m) {
     Matrix *M;
     M = (Matrix *)malloc(sizeof(Matrix));
@@ -58,17 +82,16 @@ void matrix_setelem(Matrix *M, int posicaoi, int posicaoj, float novo_valor) {
         printf("ERRO, posicao invalida!!!\n");
         free(aux);
         return;
+    } else if (novo_valor == 0) {
+        tiraNo(M, posicaoi, posicaoj);
+        free(aux);
+        return;
     } else {
-        // fazendo ele percorrer atÃ© a posicao que eu quero colocar
-        // o valor
-        // tratamento de erro se a posicao jÃ¡ conter um valor
         aux2 = M;
         for (i = 0; i < posicaoj; i++) {
             aux2 = aux2->right;
         }
-        for (aux3 = aux2, aux2 = aux2->below;
-             aux2->line < posicaoi && aux2->line != -1;
-             aux3 = aux2, aux2 = aux2->below)
+        for (aux3 = aux2, aux2 = aux2->below; aux2->line < posicaoi && aux2->line != -1; aux3 = aux2, aux2 = aux2->below)
             ;
         if (posicaoi == aux2->line) {
             aux2->info = aux->info;
@@ -82,9 +105,7 @@ void matrix_setelem(Matrix *M, int posicaoi, int posicaoj, float novo_valor) {
                 aux2 = aux2->below;
             }
 
-            for (aux3 = aux2, aux2 = aux2->right;
-                 aux2->column < posicaoj && aux2->column != -1;
-                 aux3 = aux2, aux2 = aux2->right)
+            for (aux3 = aux2, aux2 = aux2->right; aux2->column < posicaoj && aux2->column != -1; aux3 = aux2, aux2 = aux2->right)
                 ;
             aux->right = aux2;
             aux3->right = aux;
@@ -93,8 +114,17 @@ void matrix_setelem(Matrix *M, int posicaoi, int posicaoj, float novo_valor) {
 
     return;
 }
+void criarAleatorio(Matrix *M) {
+    int i, j;
+    srand((unsigned int)time(NULL));
+    for (i = 0; i < M->line; i++) {
+        for (j = 0; j < M->column; j++) {
+            matrix_setelem(M, i + 1, j + 1, ((float)rand() / (float)(RAND_MAX)) * 5.0);
+        }
+    }
+    return;
+}
 
-// retorna o valor do elemento (x, y) da matriz m.
 double matrix_getelem(Matrix *M, int x, int y) {
     Matrix *result;
     Matrix *aux, *aux2;
@@ -140,13 +170,12 @@ void imprimirBurra(Matrix *M) {
     }
     return;
 }
-
 void preencher(Matrix *M) {
 }
 
 void main() {
     Matrix *M, *aux;
-    M = zeros(300, 300);
+    M = zeros(3, 3);
 
     matrix_setelem(M, 1, 1, 10.0);
     matrix_setelem(M, 1, 2, 20.0);
@@ -156,7 +185,6 @@ void main() {
     matrix_setelem(M, 3, 3, 70.0);
 
     matrix_setelem(M, 3, 3, 0);
-
     imprimir(M);
 
     printf("\nTENTATIVA 1\n");
@@ -166,28 +194,31 @@ void main() {
     printf("\n%lf", matrix_getelem(M, 2, 2));
     printf("\n%lf", matrix_getelem(M, 3, 1));
     printf("\n%lf", matrix_getelem(M, 3, 2));
-    printf("\n%lf", matrix_getelem(M, 3, 3));
+    printf("\n%lf\n", matrix_getelem(M, 3, 3));
 
-    printf("\nImprimirBurra\n");
+    //printf("\nImprimirBurra\n");
+    Matrix *NTeste;
+    NTeste = zeros(3, 4);
+    criarAleatorio(NTeste);
+    imprimirBurra(NTeste);
+    // struct timeval start, end;
+    //int i;
 
-    struct timeval start, end;
-    int i;
+    //gettimeofday(&start, NULL);
+    // for (i = 0; i < 1; i++) imprimirBurra(M);
+    //gettimeofday(&end, NULL);
 
-    gettimeofday(&start, NULL);
-    for (i = 0; i < 1; i++) imprimirBurra(M);
-    gettimeofday(&end, NULL);
+    // printf("O tempo de execucao da funcao imprimirBurra foi de: %ld microssegundos\n",
+    //           ((end.tv_sec * 1000000 + end.tv_usec) -
+    //         (start.tv_sec * 1000000 + start.tv_usec)));
 
-    printf("O tempo de execucao da funcao imprimirBurra foi de: %ld microssegundos\n",
-           ((end.tv_sec * 1000000 + end.tv_usec) -
-            (start.tv_sec * 1000000 + start.tv_usec)));
+    //    gettimeofday(&start, NULL);
+    //for (i = 0; i < 1; i++) imprimir(M);
+    //gettimeofday(&end, NULL);
 
-    gettimeofday(&start, NULL);
-    for (i = 0; i < 1; i++) imprimir(M);
-    gettimeofday(&end, NULL);
-
-    printf("O tempo de execucao da funcao imprimir foi de: %ld microssegundos\n",
-           ((end.tv_sec * 1000000 + end.tv_usec) -
-            (start.tv_sec * 1000000 + start.tv_usec)));
+    //printf("O tempo de execucao da funcao imprimir foi de: %ld microssegundos\n",
+    //   ((end.tv_sec * 1000000 + end.tv_usec) -
+    //   (start.tv_sec * 1000000 + start.tv_usec)));
 
     /*
     for(aux=M->right;aux!=M;aux=aux->right){
@@ -199,8 +230,9 @@ void main() {
     */
 
     //Funções para Semana que Vem
-    //Tirar o Nó
-    //Criar Aleatorio
+
+    //MatrixCreate ler e criar os elementos
+    //MatrixDestrói dar free na memória;
 
     return;
 }
