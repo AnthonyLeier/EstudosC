@@ -170,7 +170,29 @@ void imprimirBurra(Matrix *M) {
     }
     return;
 }
-void preencher(Matrix *M) {
+
+void create(Matrix *M) {
+
+    int posicaoi;
+    int posicaoj;
+    float valor;
+        
+    scanf("%d", &posicaoi);
+    scanf("%d", &posicaoi);
+    scanf("%f", &valor);
+
+    matrix_setelem(M, posicaoi, posicaoj, valor);
+}
+
+void destroy(Matrix *M) {
+    int i, j;
+    Matrix *aux;
+    aux = M->below;
+    for (aux = M->below; aux != M; aux = aux->below) {
+        for (aux = aux->right; aux->column != -1; aux = aux->right) {
+            free(aux);
+        }
+    }
 }
 
 void main() {
@@ -184,10 +206,9 @@ void main() {
     matrix_setelem(M, 3, 2, 60.0);
     matrix_setelem(M, 3, 3, 70.0);
 
-    matrix_setelem(M, 3, 3, 0);
+    create(M);
     imprimir(M);
 
-    printf("\nTENTATIVA 1\n");
     printf("\n%lf", matrix_getelem(M, 1, 1));
     printf("\n%lf", matrix_getelem(M, 1, 2));
     printf("\n%lf", matrix_getelem(M, 2, 1));
@@ -196,43 +217,14 @@ void main() {
     printf("\n%lf", matrix_getelem(M, 3, 2));
     printf("\n%lf\n", matrix_getelem(M, 3, 3));
 
-    //printf("\nImprimirBurra\n");
-    Matrix *NTeste;
-    NTeste = zeros(3, 4);
-    criarAleatorio(NTeste);
-    imprimirBurra(NTeste);
-    // struct timeval start, end;
-    //int i;
-
-    //gettimeofday(&start, NULL);
-    // for (i = 0; i < 1; i++) imprimirBurra(M);
-    //gettimeofday(&end, NULL);
-
-    // printf("O tempo de execucao da funcao imprimirBurra foi de: %ld microssegundos\n",
-    //           ((end.tv_sec * 1000000 + end.tv_usec) -
-    //         (start.tv_sec * 1000000 + start.tv_usec)));
-
-    //    gettimeofday(&start, NULL);
-    //for (i = 0; i < 1; i++) imprimir(M);
-    //gettimeofday(&end, NULL);
-
-    //printf("O tempo de execucao da funcao imprimir foi de: %ld microssegundos\n",
-    //   ((end.tv_sec * 1000000 + end.tv_usec) -
-    //   (start.tv_sec * 1000000 + start.tv_usec)));
-
-    /*
-    for(aux=M->right;aux!=M;aux=aux->right){
-            printf("%lf %d %d \n",aux->info,aux->line,aux->column);
-    }
-    for(aux=M->below;aux!=M;aux=aux->below){
-            printf("%lf %d %d \n",aux->info,aux->line,aux->column);
-    }
-    */
-
-    //Funções para Semana que Vem
-
-    //MatrixCreate ler e criar os elementos
-    //MatrixDestrói dar free na memória;
+    Matrix *Random;
+    Random = zeros(3, 4);
+    criarAleatorio(Random);
+    imprimirBurra(Random);
 
     return;
+    
+    //Tarefas
+    //MatrixCreate ler e criar os elementos
+    //MatrixDestrói dar free na memória;
 }
