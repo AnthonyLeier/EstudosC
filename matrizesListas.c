@@ -171,60 +171,53 @@ void imprimirBurra(Matrix *M) {
     return;
 }
 
-void create(Matrix *M) {
-
+Matrix *create() {
     int posicaoi;
     int posicaoj;
     float valor;
-        
-    scanf("%d", &posicaoi);
-    scanf("%d", &posicaoi);
-    scanf("%f", &valor);
+    Matrix *M;
+    int linhas;
+    int colunas;
 
-    matrix_setelem(M, posicaoi, posicaoj, valor);
+    printf("Insira a largura da Matriz: ");
+    scanf("%d", &linhas);
+    printf("Insira o comprimento da Matriz: ");
+    scanf("%d", &colunas);
+
+    M = zeros(linhas, colunas);
+
+    printf("Digite os elementos e -1 para parar\n");
+    do {
+        printf("Digite a posicao X do elemento: ");
+        scanf("%d", &posicaoi);
+        printf("Digite a posicao y do elemento: ");
+        scanf("%d", &posicaoj);
+        printf("Digite o valor do elemento: ");
+        scanf("%f", &valor);
+
+        if (valor >= 0) matrix_setelem(M, posicaoi, posicaoj, valor);
+
+    } while (valor >= 0);
+    printf("Matriz Finalizada\n");
+    return M;
 }
 
 void destroy(Matrix *M) {
     int i, j;
-    Matrix *aux;
+    Matrix *aux, *delete;
     aux = M->below;
     for (aux = M->below; aux != M; aux = aux->below) {
         for (aux = aux->right; aux->column != -1; aux = aux->right) {
-            free(aux);
+            delete = aux;
+            free(delete);
         }
     }
 }
 
 void main() {
-    Matrix *M, *aux;
-    M = zeros(3, 3);
-
-    matrix_setelem(M, 1, 1, 10.0);
-    matrix_setelem(M, 1, 2, 20.0);
-    matrix_setelem(M, 2, 1, 30.0);
-    matrix_setelem(M, 2, 2, 40.0);
-    matrix_setelem(M, 3, 2, 60.0);
-    matrix_setelem(M, 3, 3, 70.0);
-
-    create(M);
+    Matrix *M;
+    M = create();
     imprimir(M);
-
-    printf("\n%lf", matrix_getelem(M, 1, 1));
-    printf("\n%lf", matrix_getelem(M, 1, 2));
-    printf("\n%lf", matrix_getelem(M, 2, 1));
-    printf("\n%lf", matrix_getelem(M, 2, 2));
-    printf("\n%lf", matrix_getelem(M, 3, 1));
-    printf("\n%lf", matrix_getelem(M, 3, 2));
-    printf("\n%lf\n", matrix_getelem(M, 3, 3));
-
-    Matrix *Random;
-    Random = zeros(3, 4);
-    criarAleatorio(Random);
-    imprimirBurra(Random);
-
-    return;
-    
-    //Tarefas
-    //MatrixCreate ler e criar os elementos
-    //MatrixDestrói dar free na memória;
+    destroy(M);
+    imprimir(M);
 }
