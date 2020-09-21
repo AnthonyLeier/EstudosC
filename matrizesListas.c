@@ -271,23 +271,23 @@ Matrix *soma(Matrix *A, Matrix *B) {
             auxC = auxC->right;
         }
         auxC = C->below;
-        printf("--> posicao %d %d \n", auxA->column, auxB->column);
+        //printf("--> posicao %d %d \n", auxA->column, auxB->column);
         while (auxA->line != -1 || auxB->line != -1) {
             while (auxA->column != -1 || auxB->column != -1) {
                 
                 if  ((auxA->column < auxB->column || auxB->column==-1)&&auxA->column!=-1) {
-                    printf("entrou1 %d %d \n", auxA->column, auxB->column);
+                    //printf("entrou1 %d %d \n", auxA->column, auxB->column);
                     auxNo = CriarN0(auxA->line,auxA->column);
                     auxNo->info = auxA->info;
                     auxA = auxA->right;
                     
                 } else if  ((auxA->column > auxB->column || auxA->column==-1)&&auxB->column!=-1) {
-                    printf("entrou2 %d %d \n", auxA->column, auxB->column);
+                    //printf("entrou2 %d %d \n", auxA->column, auxB->column);
                     auxNo = CriarN0(auxB->line,auxB->column);
                     auxNo->info = auxB->info;
                     auxB = auxB->right;
                 } else if (auxA->column == auxB->column) {
-                    printf("entrou3 %d %d \n", auxA->column, auxB->column);
+                    //printf("entrou3 %d %d \n", auxA->column, auxB->column);
                     auxNo = CriarN0(auxA->line,auxA->column);
                     auxNo->info = auxA->info + auxB->info;
                     auxA = auxA->right;
@@ -379,4 +379,44 @@ void main() {
     //printf("O valor retornado é %lf\n",valor);
 
     //return;
+
+
+    //Calculadora de Tempo
+    clock_t t; //variável para armazenar tempo
+    t = clock(); //armazena tempo
+    for(i=0;i<1000;i++){
+    imprimirBurra(M1);
+    }
+    t = clock() - t; //tempo final - tempo inicial
+
+    printf("imprimirBurra - Tempo de execucao: %lf\n", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
+    getchar();
+    getchar();
+
+    t = clock(); //armazena tempo
+    for(i=0;i<1000;i++){
+    imprimir(M1);
+    }
+    t = clock() - t; //tempo final - tempo inicial
+
+    printf("imprimir - Tempo de execucao: %lf\n", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
+    getchar();
+
+    t = clock(); //armazena tempo
+    for(i=0;i<1000;i++){
+    soma(M1,M2);
+    }
+    t = clock() - t; //tempo final - tempo inicial
+
+    printf("soma - Tempo de execucao: %lf\n", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
+    getchar();
+    
+    t = clock(); //armazena tempo
+    for(i=0;i<1000;i++){
+    somaBurra(M1,M2);
+    }
+    t = clock() - t; //tempo final - tempo inicial
+
+    printf("somaBurra - Tempo de execucao: %lf\n", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
+    getchar();
 }
