@@ -3,7 +3,7 @@
 #include <time.h>
 
 //MatrixCreate ler e criar os elementos
-//MatrixDestrÃ³i dar free na memÃ³ria;
+//MatrixDestrói dar free na memória;
 
 struct no {
     int line;
@@ -52,33 +52,26 @@ Matrix *zeros(int n, int m) {
 
 //arrumar tratamento de erro se a posicao ja existe
 void matrix_setelem(Matrix *M, int posicaoi, int posicaoj, float novo_valor) {
-    int k, i, j;
-    Matrix *aux2, *aux3;
-    Matrix *aux = CriarN0(posicaoi, posicaoj);
-    aux->info = novo_valor;
+
 
     //apontar o aux para o inicio
     if (posicaoi < 1 || posicaoj < 1 || posicaoi > M->line || posicaoj > M->column) {
         printf("ERRO, posicao invalida!!!\n");
-        free(aux);
         return;
     } else if (novo_valor == 0) {
         tiraNo(M, posicaoi, posicaoj);
-        free(aux);
         return;
     } else {
-        //fazendo ele percorrer atÃ© a posicao que eu quero colocar
-        // o valor
-        // tratamento de erro se a posicao jÃ¡ conter um valor
+        int k, i, j;
+        Matrix *aux2, *aux3;
+        Matrix *aux = CriarN0(posicaoi, posicaoj);
+        aux->info = novo_valor;
         aux2 = M;
         for (i = 0; i < posicaoj; i++) {
             aux2 = aux2->right;
         }
         for (aux3 = aux2, aux2 = aux2->below; aux2->line < posicaoi && aux2->line != -1;
-             aux3 = aux2, aux2 = aux2->below)
-            ;
-
-        //printf("posicao-> %d %d %lf\n",aux2->line,aux2->column,aux2->info);
+             aux3 = aux2, aux2 = aux2->below);
         if (aux2->line == posicaoi) {
             aux2->info = aux->info;
             free(aux);
@@ -113,9 +106,9 @@ float matrix_getelem(Matrix *M, int posicaoi, int posicaoj) {
         printf("ERRO, posicao selecionada invalida!!!\n");
         return -999;
     } else {
-        //fazendo ele percorrer atÃ© a posicao que eu quero colocar
+        //fazendo ele percorrer até a posicao que eu quero colocar
         // o valor
-        // tratamento de erro se a posicao jÃ¡ conter um valor
+        // tratamento de erro se a posicao já conter um valor
         aux2 = M;
         for (i = 0; i < posicaoj; i++) {
             aux2 = aux2->right;
@@ -124,7 +117,7 @@ float matrix_getelem(Matrix *M, int posicaoi, int posicaoj) {
              aux3 = aux2, aux2 = aux2->below)
             ;
 
-        if (aux2->line == posicaoi) {  //tirar o no quando for 0 /preencher aleatorio / tempo de execuÃ§Ã£o das funÃ§Ãµes
+        if (aux2->line == posicaoi) {  //tirar o no quando for 0 /preencher aleatorio / tempo de execução das funções
             valor = aux2->info;
         } else {
             return 0.0;
@@ -219,13 +212,14 @@ Matrix *MatrixCreate() {
         aux->info = novo_valor;
 
         if (posicaoi == 0 || posicaoj == 0) {
-            printf("ExecuÃ§Ã£o encerrada!!!\n");
+            printf("Execução encerrada!!!\n");
             break;
         } else {
-            //fazendo ele percorrer atÃ© a posicao que eu quero colocar
+            //fazendo ele percorrer até a posicao que eu quero colocar
             // o valor
-            // tratamento de erro se a posicao jÃ¡ conter um valor
+            // tratamento de erro se a posicao já conter um valor
             matrix_setelem(M, posicaoi, posicaoj, novo_valor);
+            // Aqui está o problema
         }
     }
 
@@ -264,25 +258,51 @@ Matrix *somaBurra(Matrix *A, Matrix *B) {
 
 Matrix *soma(Matrix *A, Matrix *B) {
     Matrix *auxA, *auxB;
-
+    int i;
+    Matrix *vet[A->column];
     if (A->line == B->line && A->column == B->column) {
-        Matrix *C;
+        Matrix *C,*auxC,*auxNo;
         C = zeros(B->line, A->column);
         auxA = A->below->right;
         auxB = B->below->right;
-        while (auxA->line != -1 && auxB->line != -1) {
-            while (auxA->column != -1 && auxB->column != -1) {
-                if (auxA->column < auxB->column) {
-                    matrix_setelem(C, auxA->line, auxA->column, auxA->info);
+        auxC = C;
+        for(i=0;i<A->column;i++){
+            vet[i] = auxC->right;
+            auxC = auxC->right;
+        }
+        auxC = C->below;
+        printf("--> posicao %d %d \n", auxA->column, auxB->column);
+        while (auxA->line != -1 || auxB->line != -1) {
+            while (auxA->column != -1 || auxB->column != -1) {
+                
+                if  ((auxA->column < auxB->column || auxB->column==-1)&&auxA->column!=-1) {
+                    printf("entrou1 %d %d \n", auxA->column, auxB->column);
+                    auxNo = CriarN0(auxA->line,auxA->column);
+                    auxNo->info = auxA->info;
                     auxA = auxA->right;
-                } else if (auxA->column > auxB->column) {
-                    matrix_setelem(C, auxB->line, auxB->column, auxB->info);
+                    
+                } else if  ((auxA->column > auxB->column || auxA->column==-1)&&auxB->column!=-1) {
+                    printf("entrou2 %d %d \n", auxA->column, auxB->column);
+                    auxNo = CriarN0(auxB->line,auxB->column);
+                    auxNo->info = auxB->info;
                     auxB = auxB->right;
                 } else if (auxA->column == auxB->column) {
-                    matrix_setelem(C, auxB->line, auxB->column, auxA->info + auxB->info);
+                    printf("entrou3 %d %d \n", auxA->column, auxB->column);
+                    auxNo = CriarN0(auxA->line,auxA->column);
+                    auxNo->info = auxA->info + auxB->info;
                     auxA = auxA->right;
                     auxB = auxB->right;
                 }
+                
+                
+                
+                auxNo->right = auxC->right;
+                auxC->right = auxNo;
+                auxC = auxNo;
+                auxNo->below = vet[auxNo->column-1]->below;
+                vet[auxNo->column-1]->below = auxNo;
+                vet[auxNo->column-1] = auxNo;
+                
             }
             auxA = auxA->below->right;
             auxB = auxB->below->right;
@@ -290,7 +310,18 @@ Matrix *soma(Matrix *A, Matrix *B) {
         return C;
     }
 }
+Matrix *trasposta(Matrix *M){
+    Matrix *aux;
+    int i, j;
+    aux = zeros(M->column,M->line);
+    for (i = 0; i < M->line; i++) {
+        for (j = 0; j < M->column; j++) {
+             matrix_setelem(aux,j+1, i+1,matrix_getelem(M,i+1,j+1));
+        }
 
+    }
+    return aux;
+}
 void main() {
     int i, n;
     double valor;
@@ -300,13 +331,30 @@ void main() {
     //imprimir(M);
     //matrix_destroy(M);
     //imprimir(M);
-    for (n = 200; n < 3000; n = n*2) {
+    //for (n = 200; n < 3000; n = n*2) {
+    M1 = MatrixCreate();
 
-        M1 = criarAleatorio(n,n);
-        M2 = criarAleatorio(n,n);
+    M2 = MatrixCreate();
+    M3 = soma(M1,M2);
+    imprimirBurra(M1);
+    printf("\n");
+    imprimirBurra(M2);
+    printf("\n");
+    imprimirBurra(M3);
+    //M1 = criarAleatorio(n,n);
+    //M2 = criarAleatorio(n,n);
 
-
-        clock_t Ticks1[2];
+   // M1 = criarAleatorio(2,3);
+     //imprimirBurra(M1);
+    //M2 = soma(M1,M1);
+    // imprimirBurra(M1);
+    //M2 = trasposta(M1);
+    //printf("\n");
+    //imprimirBurra(M2);
+    /*for(int i =20; i<2000;i = i*2){
+      clock_t Ticks1[2];
+        M1 = criarAleatorio(i,i);
+        M2 = criarAleatorio(i,i);
         Ticks1[0] = clock();
         M3 = somaBurra(M1, M2);
         Ticks1[1] = clock();
@@ -318,11 +366,8 @@ void main() {
         Ticks2[1] = clock();
         double Tempo2 = (Ticks2[1] - Ticks2[0]) * 1000.0 / CLOCKS_PER_SEC;
         printf("%d %g %g\n", n, Tempo1, Tempo2);
+    }*/
 
-        matrix_destroy(M1);
-        matrix_destroy(M2);
-        matrix_destroy(M3);
-    }
     //matrix_setelem(M,1,1,50.0);
     //matrix_setelem(M,1,2,255.0);
     //matrix_setelem(M,2,1,255.0);
@@ -331,7 +376,7 @@ void main() {
     //valor= matrix_getelem(M, 1, 1);
 
     //imprimir(M);
-    //printf("O valor retornado Ã© %lf\n",valor);
+    //printf("O valor retornado é %lf\n",valor);
 
-    return;
+    //return;
 }
