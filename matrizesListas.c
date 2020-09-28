@@ -133,7 +133,7 @@ void imprimir(Matrix *M) {
     int i, j;
     Matrix *aux;
     aux = M->below;
-    printf("IMPRESSAO!!\n");
+    //printf("IMPRESSAO!!\n");
     for (aux = M->below; aux != M; aux = aux->below) {
         for (aux = aux->right; aux->column != -1; aux = aux->right) {
             printf("%d %d %lf \n", aux->line, aux->column, aux->info);
@@ -331,16 +331,15 @@ void main() {
     //imprimir(M);
     //matrix_destroy(M);
     //imprimir(M);
-    //for (n = 200; n < 3000; n = n*2) {
-    M1 = MatrixCreate();
-
-    M2 = MatrixCreate();
-    M3 = soma(M1,M2);
-    imprimirBurra(M1);
-    printf("\n");
-    imprimirBurra(M2);
-    printf("\n");
-    imprimirBurra(M3);
+    for (n = 1; n < 129; n = n*2) {
+    M1 = criarAleatorio(n,n);
+    M2 = criarAleatorio(n,n);
+    //M3 = soma(M1,M2);
+    //imprimirBurra(M1);
+    //printf("\n");
+    //imprimirBurra(M2);
+    //printf("\n");
+    ///imprimirBurra(M3);
     //M1 = criarAleatorio(n,n);
     //M2 = criarAleatorio(n,n);
 
@@ -380,43 +379,56 @@ void main() {
 
     //return;
 
-
+	struct timeval start, end;
     //Calculadora de Tempo
     clock_t t; //variável para armazenar tempo
+    /*gettimeofday(&start, NULL);
     t = clock(); //armazena tempo
     for(i=0;i<1000;i++){
-    imprimirBurra(M1);
+    	imprimirBurra(M1);
+    	printf("\n");
     }
     t = clock() - t; //tempo final - tempo inicial
-
+	gettimeofday(&end, NULL);
     printf("imprimirBurra - Tempo de execucao: %lf\n", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
-    getchar();
-    getchar();
-
-    t = clock(); //armazena tempo
-    for(i=0;i<1000;i++){
-    imprimir(M1);
-    }
-    t = clock() - t; //tempo final - tempo inicial
-
-    printf("imprimir - Tempo de execucao: %lf\n", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
-    getchar();
-
-    t = clock(); //armazena tempo
-    for(i=0;i<1000;i++){
-    soma(M1,M2);
-    }
-    t = clock() - t; //tempo final - tempo inicial
-
-    printf("soma - Tempo de execucao: %lf\n", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
+    printf("Time taken to imprimirBurra is : %ld micro seconds\n",
+    ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)));
+	getchar();
     getchar();
     
+  	
+	gettimeofday(&start, NULL);
     t = clock(); //armazena tempo
     for(i=0;i<1000;i++){
-    somaBurra(M1,M2);
+    	imprimir(M1);
+    	printf("\n");
     }
     t = clock() - t; //tempo final - tempo inicial
-
-    printf("somaBurra - Tempo de execucao: %lf\n", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
-    getchar();
+	gettimeofday(&end, NULL);
+    printf("imprimir - Tempo de execucao: %lf\n", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
+    printf("Time taken to imprimirBurra is : %ld micro seconds\n",
+    ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)));
+	getchar();*/
+    
+	gettimeofday(&start, NULL);
+    t = clock(); //armazena tempo
+    for(i=0;i<1000;i++){
+    	M3 = soma(M1,M2);
+    }
+    t = clock() - t; //tempo final - tempo inicial
+	gettimeofday(&end, NULL);
+    float var1 = ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec));
+    
+    gettimeofday(&start, NULL);
+    t = clock(); //armazena tempo
+    for(i=0;i<1000;i++){
+   		M3 = somaBurra(M1,M2);
+    }
+    t = clock() - t; //tempo final - tempo inicial
+	gettimeofday(&end, NULL);   
+    float var2 = ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec));
+	
+	
+	printf("%lf, %lf, %d\n", var1, var2, n);
+	}
 }
