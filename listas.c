@@ -1,83 +1,81 @@
 #include <stdio.h>
+
 #include <stdlib.h>
 
 struct no {
     int valor;
-    struct no *prox;
+    struct no * prox;
 };
 struct lista {
     int tam;
-    struct no *inicio;
+    struct no * inicio;
 };
 
 typedef struct no NO;
 typedef struct lista LISTA;
 
-LISTA *inicializar() {
-    LISTA *L;
-    L = (LISTA *)malloc(sizeof(LISTA));
-    L->tam = 0;
-    L->inicio = NULL;
+LISTA * inicializar() {
+    LISTA * L;
+    L = (LISTA * ) malloc(sizeof(LISTA));
+    L -> tam = 0;
+    L -> inicio = NULL;
     return L;
 }
-NO *CriarNo(int valor) {
-    NO *N;
-    N = (NO *)malloc(sizeof(NO));
-    N->valor = valor;
-    N->prox = NULL;
+NO * CriarNo(int valor) {
+    NO * N;
+    N = (NO * ) malloc(sizeof(NO));
+    N -> valor = valor;
+    N -> prox = NULL;
     return N;
 }
-void InserirInicio(LISTA *L, NO *N) {
-    N->prox = L->inicio;
-    L->inicio = N;
-    L->tam++;
+void InserirInicio(LISTA * L, NO * N) {
+    N -> prox = L -> inicio;
+    L -> inicio = N;
+    L -> tam++;
     return;
 }
-void InserirFim(LISTA *L, NO *N) {
-    NO *aux;
-    if (L->inicio == NULL)
-        L->inicio = N;
+void InserirFim(LISTA * L, NO * N) {
+    NO * aux;
+    if (L -> inicio == NULL)
+        L -> inicio = N;
     else {
-        for (aux = L->inicio; aux->prox != NULL; aux = aux->prox)
-            ;
-        aux->prox = N;
+        for (aux = L -> inicio; aux -> prox != NULL; aux = aux -> prox)
+        ;
+        aux -> prox = N;
     }
-    L->tam++;
+    L -> tam++;
     return;
 }
-void InserirOrdenado(LISTA *L, NO *N) {
-    NO *aux;
-    if (L->inicio == NULL)
-        L->inicio = N;
-    else if (N->valor < L->inicio->valor) {
-        N->prox = L->inicio;
-        L->inicio = N;
+void InserirOrdenado(LISTA * L, NO * N) {
+    NO * aux;
+    if (L -> inicio == NULL)
+        L -> inicio = N;
+    else if (N -> valor < L -> inicio -> valor) {
+        N -> prox = L -> inicio;
+        L -> inicio = N;
     } else {
-        for (aux = L->inicio; aux->prox != NULL && N->valor >= aux->prox->valor;
-             aux = aux->prox)
-            ;
-        N->prox = aux->prox;
-        aux->prox = N;
+        for (aux = L -> inicio; aux -> prox != NULL && N -> valor >= aux -> prox -> valor; aux = aux -> prox)
+        ;
+        N -> prox = aux -> prox;
+        aux -> prox = N;
     }
-    L->tam++;
+    L -> tam++;
     return;
 }
-NO *retirar(LISTA *L, int val) {
-    NO *ultimo;
-    NO *antipenultimo;
-    if (val == L->inicio->valor) {
-        ultimo = L->inicio;
-        L->inicio = L->inicio->prox;
-        L->tam--;
+NO * retirar(LISTA * L, int val) {
+    NO * ultimo;
+    NO * antipenultimo;
+    if (val == L -> inicio -> valor) {
+        ultimo = L -> inicio;
+        L -> inicio = L -> inicio -> prox;
+        L -> tam--;
         return ultimo;
     } else {
-        for (ultimo = L->inicio, antipenultimo = L->inicio;
-             ultimo != NULL && ultimo->valor < val;
-             antipenultimo = ultimo, ultimo = ultimo->prox)
-            ;
-        if (ultimo != NULL && ultimo->valor == val) {
-            antipenultimo->prox = ultimo->prox;
-            L->tam--;
+        for (ultimo = L -> inicio, antipenultimo = L -> inicio; ultimo != NULL && ultimo -> valor < val; antipenultimo = ultimo, ultimo = ultimo -> prox)
+        ;
+        if (ultimo != NULL && ultimo -> valor == val) {
+            antipenultimo -> prox = ultimo -> prox;
+            L -> tam--;
             return ultimo;
         } else {
             return NULL;
@@ -85,39 +83,39 @@ NO *retirar(LISTA *L, int val) {
     }
 }
 
-LISTA *copiar(LISTA *L) {  // Implementar copiar uma lista para outra lista
-    LISTA *novo = inicializar();
-    NO *aux;
-    for (aux = L->inicio; aux != NULL; aux = aux->prox) {
-        InserirFim(novo, CriarNo(aux->valor));
+LISTA * copiar(LISTA * L) { // Implementar copiar uma lista para outra lista
+    LISTA * novo = inicializar();
+    NO * aux;
+    for (aux = L -> inicio; aux != NULL; aux = aux -> prox) {
+        InserirFim(novo, CriarNo(aux -> valor));
     }
     return novo;
 }
 
-NO *RetirarInicio(LISTA *L) {
-    NO *aux;
-    aux = L->inicio;
-    L->inicio = L->inicio->prox;
-    if (L->tam > 0) {
-        L->tam--;
+NO * RetirarInicio(LISTA * L) {
+    NO * aux;
+    aux = L -> inicio;
+    L -> inicio = L -> inicio -> prox;
+    if (L -> tam > 0) {
+        L -> tam--;
     }
-    aux->prox = NULL;
+    aux -> prox = NULL;
     return aux;
 }
-LISTA *ordenar(LISTA *L) {
-    NO *aux;
-    LISTA *novo;
+LISTA * ordenar(LISTA * L) {
+    NO * aux;
+    LISTA * novo;
     novo = inicializar();
-    while (L->inicio != NULL) {
+    while (L -> inicio != NULL) {
         aux = RetirarInicio(L);
         InserirOrdenado(novo, aux);
     }
     return novo;
 }
 
-NO *RetirarFim(LISTA *L) {
-    NO *ultimo;
-    NO *antipenultimo;
+NO * RetirarFim(LISTA * L) {
+    NO * ultimo;
+    NO * antipenultimo;
     /*
      NO *ultimo = L;
      NO *antipenultimo= L;
@@ -126,30 +124,29 @@ NO *RetirarFim(LISTA *L) {
         ultimo = ultimo->prox;
 
     }*/
-    for (ultimo = L->inicio, antipenultimo = L->inicio; ultimo->prox != NULL;
-         antipenultimo = ultimo, ultimo = ultimo->prox)
-        ;
-    antipenultimo->prox = NULL;
+    for (ultimo = L -> inicio, antipenultimo = L -> inicio; ultimo -> prox != NULL; antipenultimo = ultimo, ultimo = ultimo -> prox)
+    ;
+    antipenultimo -> prox = NULL;
 
-    if (L->tam > 0) {
-        L->tam--;
+    if (L -> tam > 0) {
+        L -> tam--;
     }
     return ultimo;
 }
 
-void imprimir(LISTA *L) {
+void imprimir(LISTA * L) {
     printf("NOSSA LISTA\t");
-    NO *aux;
-    for (aux = L->inicio; aux != NULL; aux = aux->prox) {
-        printf("%d ", aux->valor);
+    NO * aux;
+    for (aux = L -> inicio; aux != NULL; aux = aux -> prox) {
+        printf("%d ", aux -> valor);
     }
     printf("\n");
     return;
 }
 
 void main() {
-    LISTA *L, *novo;
-    NO *N;
+    LISTA * L, * novo;
+    NO * N;
     L = inicializar();
 
     N = CriarNo(15);
